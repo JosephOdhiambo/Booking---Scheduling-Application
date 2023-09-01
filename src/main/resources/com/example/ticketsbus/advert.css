@@ -1,0 +1,5 @@
+.loopedImage{
+    -fx-background-image: url('img/Review_1.gif');
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}

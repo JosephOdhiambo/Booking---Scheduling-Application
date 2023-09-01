@@ -1,0 +1,5 @@
+.loop{
+    -fx-background-image: url('Scene_3.gif');
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100%;
+}
