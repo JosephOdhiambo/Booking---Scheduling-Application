@@ -748,8 +748,7 @@ public class BusController implements Initializable {
 
 
         } catch (Exception e) {
-//            System.out.println("Table mini error");
-            e.printStackTrace();
+            System.out.println("Table mini error");
         }
     }
 
