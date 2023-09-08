@@ -1,6 +1,7 @@
 package com.example.ticketsbus;
 
 
+
 import com.example.ticketsbus.model.BookinDetails;
 import com.example.ticketsbus.model.HeaderDetails;
 import com.codingerror.model.ProductTableHeader;
@@ -194,6 +195,9 @@ public class BusController implements Initializable {
     private Button checkAvailability;
 
     @FXML
+    private Label balanceInfo;
+
+    @FXML
     private Label balanceLBL;
 
     private String serve;
@@ -288,7 +292,6 @@ public class BusController implements Initializable {
         unameLabel.setText(fileContent);
 
 
-
         boolean isBookingFound = checkBooking();
 
         if (isBookingFound) {
@@ -367,31 +370,37 @@ public class BusController implements Initializable {
 
 
         bookSeats.setOnAction(e -> {
-            // Establish a database connection
-            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bus", "root", "")) {
-                // Prepare the SQL update statement
-                String updateQuery = "UPDATE seat_names SET picked = 1 WHERE seatname IN (" + selectedSeats.toString() + ")";
-                String updateQ = "UPDATE seat_names SET uname = '" + fileContent + "' WHERE seatname IN (" + selectedSeats.toString() + ")";
+            Integer x = Integer.valueOf(balanceLBL.getText());
+            int y = Integer.parseInt(totalPrice.getText());
+            if(x < y){
+                System.out.println("Top up amount to make booking");
+            } else{
+                // Establish a database connection
+                try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bus", "root", "")) {
+                    // Prepare the SQL update statement
+                    String updateQuery = "UPDATE seat_names SET picked = 1 WHERE seatname IN (" + selectedSeats.toString() + ")";
+                    String updateQ = "UPDATE seat_names SET uname = '" + fileContent + "' WHERE seatname IN (" + selectedSeats.toString() + ")";
 
-                // Create a prepared statement
-                PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
-                PreparedStatement prepared = connection.prepareStatement(updateQ);
+                    // Create a prepared statement
+                    PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+                    PreparedStatement prepared = connection.prepareStatement(updateQ);
 
-                // Execute the update statement
-                int rowsUpdated = preparedStatement.executeUpdate();
-                int rowsUpdate = prepared.executeUpdate();
-                System.out.println("Rows updated: " + rowsUpdated);
-                System.out.println(updateQuery);
-                System.out.println(updateQ);
+                    // Execute the update statement
+                    int rowsUpdated = preparedStatement.executeUpdate();
+                    int rowsUpdate = prepared.executeUpdate();
+                    System.out.println("Rows updated: " + rowsUpdated);
+                    System.out.println(updateQuery);
+                    System.out.println(updateQ);
 
-                System.out.println("Users updated: " + rowsUpdate);
-                seats.disableProperty();
-            } catch (SQLException n) {
-                n.printStackTrace();
+                    System.out.println("Users updated: " + rowsUpdate);
+                    seats.disableProperty();
+                } catch (SQLException n) {
+                    n.printStackTrace();
+                }
+                saveBooking();
+                seats.setDisable(false);
+                loadFXMLAndSetScene("book.fxml", e);
             }
-            saveBooking();
-            seats.setDisable(false);
-            loadFXMLAndSetScene("book.fxml", e);
         });
 
         connect();
@@ -400,16 +409,6 @@ public class BusController implements Initializable {
             seatcount.setText("Selected Count: " + count);
             i = Integer.parseInt(flabel.getText()) * count;
             totalPrice.setText(String.valueOf(i));
-            if (count >= 3) {
-//                seats.setVisible(false);
-                Alert alert = new Alert(Alert.AlertType.NONE);
-                alert.setAlertType(Alert.AlertType.INFORMATION);
-                alert.setContentText("You can select a maximum of 3 Seats");
-                alert.show();
-
-                seats.hide();
-                seats.setDisable(true);
-            }
         });
 
         seats.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) c -> {
@@ -452,19 +451,6 @@ public class BusController implements Initializable {
 
                     loadFXMLAndSetScene("book.fxml", e);
 
-//                    userName.setText("");
-//                    lblPhone.setText("");
-//                    sourcelabel.setText("");
-//                    dlabel.setText("");
-//                    serlabel.setText("");
-//                    datelabel.setText("");
-//                    from.getSelectionModel().clearSelection();
-//                    to.getSelectionModel().clearSelection();
-//                    datE.getSelectionModel().clearSelection();
-//                    contactNo.setText("");
-//                    flabel.setText("");
-//                    seats.hide();
-//                    seats.setDisable(true);
                 } else {
                     loadSeats();
                 }
@@ -504,6 +490,7 @@ public class BusController implements Initializable {
         });
 
         refreshBalance();
+
         printReport.setOnAction(r -> {
 
             LocalDate ld = LocalDate.now();
@@ -608,7 +595,17 @@ public class BusController implements Initializable {
         from.setOnAction(e -> checkSelections(from, to));
         to.setOnAction(e -> checkSelections(from, to));
 
+        checkBalance();
+    }
 
+    private void checkBalance() {
+        Integer x = Integer.valueOf(balanceLBL.getText());
+        if(x <= 0){
+            dBoard.setDisable(true);
+            mBooking.setDisable(true);
+            dashboard.setDisable(true);
+            balanceInfo.setText("Topup Account");
+        }
     }
 
     private void updateBalance() {

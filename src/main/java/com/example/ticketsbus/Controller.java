@@ -311,7 +311,8 @@ public class Controller implements Initializable {
 
                     Statement statement = connection.createStatement();
 
-                    PreparedStatement stmt = connection.prepareStatement("insert into user values (?,?,?,?,?,?,?,?,?,?)");
+                    PreparedStatement stmt = connection.prepareStatement("insert into user values (?,?,?,?,?,?,?,?,?,?,?)");
+                    RadioButton selectedRadioButton = (RadioButton) gender.getSelectedToggle();
                     stmt.setString(1, txtUname.getText());
                     stmt.setString(2, txtPassword.getText());
                     stmt.setString(3, txtFirstName.getText());
@@ -320,6 +321,9 @@ public class Controller implements Initializable {
                     stmt.setString(6, txtAge.getText());
                     stmt.setString(7, txtState.getText());
                     stmt.setString(8, txtCity.getText());
+                    stmt.setString(9, selectedRadioButton.getText());
+                    stmt.setString(10, txtMail.getText());
+                    stmt.setInt(11, 0);
                     if (this.male.isSelected()) {
                         stmt.setString(9, "Male");
                     } else {
@@ -555,4 +559,7 @@ public class Controller implements Initializable {
         dialog.showAndWait();
     }
 
+    public void handleBottomLeftButtonClick(ActionEvent actionEvent) {
+        System.exit(0);
+    }
 }

@@ -32,6 +32,7 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
+        System.setProperty("splashscreen", "C:\\Users\\odhis\\IdeaProjects\\Booking---Scheduling-Application\\src\\main\\resources\\com\\example\\ticketsbus\\img\\Typography - Redwood 9 (00086).bmp");
         launch();
     }
 }

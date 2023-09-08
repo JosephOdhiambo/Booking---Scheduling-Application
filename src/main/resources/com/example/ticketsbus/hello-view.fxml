@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import java.lang.String?>
+<?import java.net.URL?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -131,4 +133,20 @@
          </children>
       </AnchorPane>
    </center>
+
+   <top>
+        <Button onAction="#handleBottomLeftButtonClick" >
+           <graphic>
+              <FontAwesomeIconView glyphName="CLOSE" />
+           </graphic>
+           <styleClass>
+              <String fx:value="nav-button1" />
+              <String fx:value="headerLabel" />
+           </styleClass>
+           <stylesheets>
+              <URL value="@nav.css" />
+              <URL value="@HeaderLabel.css" />
+           </stylesheets>
+        </Button>
+   </top>
 </BorderPane>

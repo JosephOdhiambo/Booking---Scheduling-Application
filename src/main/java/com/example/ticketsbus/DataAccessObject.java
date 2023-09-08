@@ -24,6 +24,23 @@ public class DataAccessObject {
 
     }
 
+
+    public ObservableList<BalanceModel> getUserData(String query) {
+        ObservableList<BalanceModel> list = FXCollections.observableArrayList();
+        try {
+            connect = database.getConnection();
+            pstmt = connect.prepareStatement(query);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new BalanceModel(rs.getString(1), rs.getInt(2)));
+            }
+        } catch (Exception e) {
+            showExceptionDialog(e);
+        } finally {
+            database.close(connect, pstmt, rs);
+        }
+        return list;
+    }
     public ObservableList<Booking> getBookingData(String query) {
         ObservableList<Booking> list = FXCollections.observableArrayList();
         try {

@@ -538,6 +538,48 @@ public class AdminController implements Initializable {
         }
     }
 
+    public void loadUser() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("updateBalance.fxml"));
+            Node root = loader.load();
+
+            // Create a new Stage for the modal dialog
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initStyle(StageStyle.UNDECORATED); // Remove window decorations
+            dialogStage.setTitle("Update Balance"); // Set the title for the modal dialog
+
+            // Create an exit button
+            Button exitButton = new Button("Exit");
+            exitButton.setOnAction(e -> dialogStage.close());
+
+            // Create a new AnchorPane to hold the loaded content and the exit button
+            AnchorPane modalPane = new AnchorPane(root, exitButton);
+
+            // Set the left and right anchors to stretch the content and position the exit button
+            AnchorPane.setBottomAnchor(root, 30.0); // Adjust the bottom margin as needed
+            AnchorPane.setTopAnchor(root, 0.0);
+            AnchorPane.setLeftAnchor(root, 0.0);
+            AnchorPane.setRightAnchor(root, 0.0);
+
+            // Position the exit button in the top-right corner
+            AnchorPane.setTopAnchor(exitButton, 5.0);
+            AnchorPane.setRightAnchor(exitButton, 5.0);
+
+            // Create a Scene with the modalPane as its root
+            Scene dialogScene = new Scene(modalPane);
+
+            // Set the Scene for the dialogStage
+            dialogStage.setScene(dialogScene);
+
+            // Show the modal dialog
+            dialogStage.showAndWait(); // This will block the main UI until the modal is closed
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private void loadLocation() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Location.fxml"));
         try {
@@ -1131,5 +1173,9 @@ public class AdminController implements Initializable {
             }
 
         }
+    }
+
+    public void checkUser(ActionEvent actionEvent) {
+        loadUser();
     }
 }
