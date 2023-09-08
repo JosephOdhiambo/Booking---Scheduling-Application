@@ -115,7 +115,7 @@
                         <FontAwesomeIconView fx:id="nav" glyphName="NAVICON" size="30" />
                      </graphic>
                   </Button>
-                  <Button fx:id="reportView" layoutX="913.0" layoutY="7.0" mnemonicParsing="false" style="-fx-background-color: #007BFF;" styleClass="nav-button" text="Report" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="213.0" AnchorPane.topAnchor="3.0">
+                  <Button fx:id="reportView" layoutX="913.0" layoutY="7.0" mnemonicParsing="false" style="-fx-background-color: #007BFF;" styleClass="nav-button" text="Report" textFill="WHITE" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="213.0" AnchorPane.topAnchor="3.0">
                      <stylesheets>
                         <URL value="@metroui.css" />
                         <URL value="@nav.css" />
@@ -134,7 +134,7 @@
                         <URL value="@HeaderLabel.css" />
                      </stylesheets>
                   </Button>
-                  <Button layoutX="723.0" layoutY="13.0" mnemonicParsing="false" onAction="#checkUser" text="Button" />
+                  <Button layoutX="674.0" layoutY="5.0" mnemonicParsing="false" onAction="#checkUser" stylesheets="@metroui.css" text="Token" />
                </children>
             </AnchorPane>
          </children>

@@ -1,9 +1,14 @@
 package com.example.ticketsbus;
 
 import com.example.ticketsbus.connectivity.ConnectionClass;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.net.URL;
 import java.sql.*;
@@ -50,12 +55,37 @@ public class BalanceController implements Initializable {
                 int rowsAffected = preparedStatement.executeUpdate();
 
                 if (rowsAffected > 0) {
-                    System.out.println("Balance updated successfully.");
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Info")
+                            .text("Balance updated successfully.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_CENTER)
+                            .onAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent event) {
+
+                                }
+                            });
+                    notificationBuilder.showConfirm();
+
                     refreshUser();
                     comboUsername.getSelectionModel().clearSelection();
                     txtBalance.clear();
                 } else {
-                    System.out.println("No user found with the given username.");
+                    Notifications notificationBuilder = Notifications.create()
+                            .title("Error")
+                            .text("No user found with the given username.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_CENTER)
+                            .onAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent event) {
+
+                                }
+                            });
+                    notificationBuilder.showConfirm();
                 }
 
                 // Close the database connection
