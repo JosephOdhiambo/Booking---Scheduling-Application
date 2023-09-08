@@ -193,6 +193,9 @@ public class BusController implements Initializable {
     @FXML
     private Button checkAvailability;
 
+    @FXML
+    private Label balanceLBL;
+
     private String serve;
 
     @FXML
@@ -486,12 +489,13 @@ public class BusController implements Initializable {
             dashboard.setVisible(true);
         });
 
+        refreshBooking();
         mBooking.setOnAction(e -> {
             if (dashboard.isVisible()) {
                 dashboard.setVisible(false);
             }
             Bookings.setVisible(true);
-            refreshBooking();
+
         });
 
 
@@ -499,7 +503,9 @@ public class BusController implements Initializable {
             bookinData();
         });
 
+        refreshBalance();
         printReport.setOnAction(r -> {
+
             LocalDate ld = LocalDate.now();
 
 
@@ -541,6 +547,8 @@ public class BusController implements Initializable {
                     // Term and condition end
                     System.out.println("PDF generated");
 
+                    updateBalance();
+
                     if (file.exists()) {
                         try {
                             Desktop.getDesktop().open(file);
@@ -553,6 +561,8 @@ public class BusController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
+
+
         });
 
         checkAvailability.setOnAction(e -> {
@@ -599,6 +609,87 @@ public class BusController implements Initializable {
         to.setOnAction(e -> checkSelections(from, to));
 
 
+    }
+
+    private void updateBalance() {
+        Integer bal = Integer.valueOf(balanceLBL.getText());
+        Integer amt = Integer.valueOf(bookingAmount.getText());
+        Integer x = bal - amt;
+
+
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        try {
+            PreparedStatement ps;
+            String q = "UPDATE user SET balance = ? WHERE uname = ?";
+            ps = connection.prepareStatement(q);
+            ps.setString(1, String.valueOf(x));
+            ps.setString(2, fileContent);
+            int count = ps.executeUpdate();
+
+            if (count > 0) {
+                refreshBalance();
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        deleteBooking();
+    }
+
+    private void deleteBooking() {
+        try {
+            ConnectionClass connectionClass = new ConnectionClass();
+            Connection connection = connectionClass.getConnection();
+
+            // Create a prepared statement to execute the DELETE statement
+            String deleteQuery = "DELETE FROM bookings WHERE name = ? AND service = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+            preparedStatement.setString(1, fileContent);
+            preparedStatement.setString(2, bookingServ.getText());
+
+            // Execute the DELETE statement
+            int rowsDeleted = preparedStatement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Booking deleted successfully.");
+            } else {
+                System.out.println("Booking not found or couldn't be deleted.");
+            }
+
+            // Close the prepared statement and the connection
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while deleting the booking.");
+        }
+    }
+
+    private void refreshBalance() {
+        try {
+            ConnectionClass connectionClass = new ConnectionClass();
+            Connection con = connectionClass.getConnection();
+
+            // Prepare and execute a query to fetch the balance
+            String sql = "SELECT balance FROM user WHERE uname = ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, fileContent); // Replace with the username you want to fetch the balance for
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int balance = resultSet.getInt("balance");
+                balanceLBL.setText(Integer.toString(balance));
+            } else {
+                System.out.println("User not found");
+            }
+
+            // Close the database connection
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -748,7 +839,8 @@ public class BusController implements Initializable {
 
 
         } catch (Exception e) {
-            System.out.println("Table mini error");
+//            System.out.println("Table mini error");
+            e.printStackTrace();
         }
     }
 
